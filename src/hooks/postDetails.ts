@@ -1,5 +1,5 @@
 import { HEADERS, URL_COMMENTS, URL_POSTS, URL_USERS } from "@/config";
-import { Comments } from "@/helpers/ReponseArray";
+import { Comments } from "@/helpers/Types";
 import { useCommentsStore } from "@/store/comments";
 import axios from "axios";
 

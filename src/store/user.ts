@@ -1,4 +1,4 @@
-import { User } from "@/helpers/ReponseArray";
+import { User } from "@/helpers/Types";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", {

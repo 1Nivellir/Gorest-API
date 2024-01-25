@@ -1,4 +1,4 @@
-import { OnePost } from "@/helpers/ReponseArray";
+import { OnePost } from "@/helpers/Types";
 import { defineStore } from "pinia";
 
 export const usePostsStore = defineStore("posts", {

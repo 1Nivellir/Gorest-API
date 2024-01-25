@@ -1,4 +1,4 @@
-import { Comments } from "@/helpers/ReponseArray";
+import { Comments } from "@/helpers/Types";
 import { defineStore } from "pinia";
 
 export const useCommentsStore = defineStore("comments", {

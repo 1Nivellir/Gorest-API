@@ -1,12 +1,11 @@
 import { HEADERS, URL_USERS } from "@/config";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
-import { Response, User } from "./ReponseArray";
+import { Response, User } from "./Types";
 
 const userStore = useUserStore();
 export const getUser = async (id: number) => {
   const url = URL_USERS + id;
-
   try {
     const response = await axios.get(url, { headers: HEADERS });
     updateUserStore(response);

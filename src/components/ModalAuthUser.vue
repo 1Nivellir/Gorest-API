@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
-import { Response, User } from "@/helpers/ReponseArray";
+import { Response, User } from "@/helpers/Types";
 import { getUser } from "@/helpers/UserServise";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
@@ -87,3 +87,4 @@ export default {
 </script>
 
 <style lang="scss" scoped></style>
+@/helpers/Types
