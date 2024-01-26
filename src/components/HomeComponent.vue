@@ -28,11 +28,11 @@
           @click.prevent="goToMyPost"
           >Мои посты
         </v-list-item>
-        <v-list-item prepend-icon="mdi-view-dashboard" value="home">
+        <!-- <v-list-item prepend-icon="mdi-view-dashboard" value="home">
           <RouterLink :to="{ name: 'todos' }" class="custom__link-header"
             >Мои дела</RouterLink
           >
-        </v-list-item>
+        </v-list-item> -->
       </v-list>
     </v-navigation-drawer>
 
