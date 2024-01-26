@@ -43,7 +43,7 @@
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
 import { User } from "@/helpers/Types";
-import { getUser } from "@/helpers/UserServise";
+import { getUser } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
 import { ref } from "vue";
@@ -59,11 +59,11 @@ export default {
       try {
         const response = await axios.get(url, { headers: HEADERS });
         const userData: User = response.data;
-          modalAuth.value = false;
-          userStore.setUserData(userData);
-          userStore.getAuthTrue();
-          if (id) getUser(id);
-          console.log(response.data);
+        modalAuth.value = false;
+        userStore.setUserData(userData);
+        userStore.getAuthTrue();
+        if (id) getUser(id);
+        console.log(response.data);
       } catch (error) {
         console.log("Error:", error);
       }
@@ -79,4 +79,4 @@ export default {
 </script>
 
 <style lang="scss" scoped></style>
-@/helpers/Types
+@/helpers/Types @/helpers/UserService

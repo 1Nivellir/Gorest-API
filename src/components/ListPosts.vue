@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import OnePost from "@/components/OnePost.vue";
-import { fetchPost } from "@/helpers/PostServise";
+import { fetchPost } from "@/helpers/PostService";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
 import { computed, inject, onMounted, watch } from "vue";
@@ -78,3 +78,4 @@ export default {
   background-color: #011627;
 }
 </style>
+@/helpers/PostService

@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { getUser } from "@/helpers/UserServise";
+import { getUser } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
 import { defineComponent, onMounted, reactive, ref } from "vue";
 
@@ -77,3 +77,4 @@ export default defineComponent({
 </script>
 
 <style scoped></style>
+@/helpers/UserService

@@ -127,7 +127,7 @@
 
 <script lang="ts">
 import { HEADERS, URL_POSTS } from "@/config";
-import { fetchPost } from "@/helpers/PostServise";
+import { fetchPost } from "@/helpers/PostService";
 import { OnePost } from "@/helpers/Types";
 import {
   onBeforeEnter,
@@ -356,4 +356,4 @@ export default {
   padding: 20px;
 }
 </style>
-@/helpers/Types
+@/helpers/Types @/helpers/PostService

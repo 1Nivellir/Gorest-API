@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { deleteUser as deleteUserService } from "@/helpers/UserServise";
+import { deleteUser as deleteUserService } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
 import { computed, ref } from "vue";
 import ModalUpdateUser from "./ModalUpdateUser.vue";
@@ -72,3 +72,4 @@ export default {
   padding: 15px;
 }
 </style>
+@/helpers/UserService

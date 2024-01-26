@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
-import { fetchPost } from "@/helpers/PostServise";
+import { fetchPost } from "@/helpers/PostService";
 import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
@@ -97,3 +97,4 @@ export default defineComponent({
   background: greenyellow;
 }
 </style>
+@/helpers/PostService
