@@ -1,28 +1,27 @@
 import { HEADERS, URL_USERS } from "@/config";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
-import { Response, User } from "./Types";
+import { User } from "./Types";
 
 const userStore = useUserStore();
-export const getUser = async (id: number) => {
+
+export const getUser = async (id: number): Promise<User> => {
   const url = URL_USERS + id;
+  let userData: User = {
+    id: 0,
+    email: "",
+    gender: "",
+    name: "",
+    status: "",
+  };
   try {
     const response = await axios.get(url, { headers: HEADERS });
-    updateUserStore(response);
+    userData = response.data;
+    userStore.setUserData(userData);
   } catch (error) {
     console.log("Error:", error);
   }
-};
-
-export const updateUserStore = (response: Response) => {
-  const userData: User = {
-    id: response.data.id,
-    email: response.data.email,
-    gender: response.data.gender,
-    name: response.data.name,
-    status: response.data.status,
-  };
-  userStore.setUserData(userData);
+  return userData;
 };
 
 export const deleteUser = async () => {
@@ -30,16 +29,17 @@ export const deleteUser = async () => {
   const url = URL_USERS + id;
   try {
     const response = await axios.delete(url, { headers: HEADERS });
-    console.log("User delete");
-    localStorage.removeItem("UserData");
-    userStore.isAuth = false;
-    userStore.setUserData({
-      id: 0,
-      email: "",
-      gender: "",
-      name: "",
-      status: "",
-    });
+    if (response.status === 204) {
+      localStorage.removeItem("UserData");
+      userStore.isAuth = false;
+      userStore.setUserData({
+        id: 0,
+        email: "",
+        gender: "",
+        name: "",
+        status: "",
+      });
+    }
   } catch (error) {
     console.log("Error:", error);
   }

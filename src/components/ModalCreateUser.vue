@@ -63,7 +63,6 @@
 
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
-import { updateUserStore } from "@/helpers/UserServise";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
 import { reactive, ref } from "vue";
@@ -95,11 +94,10 @@ export default {
         const response = await axios.post(url, data, {
           headers: HEADERS,
         });
-        console.log("User created:", response.data);
         userStore.setUserLocalStorage(response.data);
         dialog.value = false;
         userStore.isAuth = true;
-        updateUserStore(response);
+        userStore.setUserData(response.data);
       } catch (error) {
         console.log("Error:", error);
       }

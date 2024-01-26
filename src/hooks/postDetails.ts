@@ -1,5 +1,6 @@
-import { HEADERS, URL_COMMENTS, URL_POSTS, URL_USERS } from "@/config";
+import { HEADERS, URL_COMMENTS, URL_POSTS } from "@/config";
 import { Comments } from "@/helpers/Types";
+import { getUser } from "@/helpers/UserServise";
 import { useCommentsStore } from "@/store/comments";
 import axios from "axios";
 
@@ -25,19 +26,17 @@ export async function getPostDetails(id: number) {
   };
 
   try {
-    console.log("Сработал хук");
-
     const postResponse = await axios.get(URL_POSTS + id, {
       headers: HEADERS,
     });
     const userId = postResponse.data.user_id;
     commentsDetails.postTitle = postResponse.data.title;
     commentsDetails.postBody = postResponse.data.body;
-    const userResponse = await axios.get(URL_USERS + userId, {
-      headers: HEADERS,
-    });
-    commentsDetails.userName = userResponse.data.name;
-    commentsDetails.userEmail = userResponse.data.email;
+
+    const userResponse = await getUser(userId);
+    commentsDetails.userName = userResponse.name;
+    commentsDetails.userEmail = userResponse.email;
+
     const commentsResponse = await axios.get(URL_POSTS + id + "/comments", {
       headers: HEADERS,
     });
@@ -52,12 +51,14 @@ export async function getPostDetails(id: number) {
   return commentsDetails;
 }
 
-export function deleteComment(id: number) {
+export async function deleteComment(id: number) {
   try {
-    const response = axios.delete(URL_COMMENTS + id, {
+    const response = await axios.delete(URL_COMMENTS + id, {
       headers: HEADERS,
     });
-    commentStore.removeComment(id);
+    if (response.status === 204) {
+      commentStore.removeComment(id);
+    }
   } catch (error) {
     console.log("Ошибка при удалении комментария:", error);
   }

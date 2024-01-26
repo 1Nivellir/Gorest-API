@@ -42,7 +42,7 @@
 
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
-import { Response, User } from "@/helpers/Types";
+import { User } from "@/helpers/Types";
 import { getUser } from "@/helpers/UserServise";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
@@ -56,25 +56,17 @@ export default {
       const id = getUserId.value;
       const userStore = useUserStore();
       const url = URL_USERS + id;
-      return axios
-        .get(url, { headers: HEADERS })
-        .then((response: Response) => {
-          const userData: User = {
-            id: response.data.id,
-            email: response.data.email,
-            gender: response.data.gender,
-            name: response.data.name,
-            status: response.data.status,
-          };
+      try {
+        const response = await axios.get(url, { headers: HEADERS });
+        const userData: User = response.data;
           modalAuth.value = false;
           userStore.setUserData(userData);
           userStore.getAuthTrue();
           if (id) getUser(id);
           console.log(response.data);
-        })
-        .catch((error) => {
-          console.log("Error:", error);
-        });
+      } catch (error) {
+        console.log("Error:", error);
+      }
     };
 
     return {

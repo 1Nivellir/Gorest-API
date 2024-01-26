@@ -78,7 +78,6 @@
 
 <script lang="ts">
 import { HEADERS, URL_USERS } from "@/config";
-import { updateUserStore } from "@/helpers/UserServise";
 import { useUserStore } from "@/store/user";
 import axios from "axios";
 import { ref } from "vue";
@@ -116,7 +115,8 @@ export default {
         console.log("User updated:", response.data);
         userStore.setUserData(data);
         updateDialog.value = false;
-        updateUserStore(response);
+
+        userStore.setUserData(response.data);
       } catch (error) {
         console.log("Error:", error);
       }
