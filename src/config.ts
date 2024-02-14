@@ -4,6 +4,7 @@ export const TOKEN_API_GOREST =
 export const URL_USERS = "https://gorest.co.in/public/v2/users/";
 export const URL_POSTS = "https://gorest.co.in/public/v2/posts/";
 export const URL_COMMENTS = "https://gorest.co.in/public/v2/comments/";
+export const URL_TODOS = "https://gorest.co.in/public/v2/todos/";
 
 export const HEADERS = {
   Accept: "application/json",

@@ -28,11 +28,14 @@
           @click.prevent="goToMyPost"
           >Мои посты
         </v-list-item>
-        <!-- <v-list-item prepend-icon="mdi-view-dashboard" value="home">
-          <RouterLink :to="{ name: 'todos' }" class="custom__link-header"
-            >Мои дела</RouterLink
-          >
-        </v-list-item> -->
+        <v-list-item
+          link
+          prepend-icon="mdi-view-dashboard"
+          value="todos"
+          @click.prevent="goToMyTodo"
+        >
+          Мои дела
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -73,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import listPosts from "@/components/ListPosts.vue";
+import listPosts from "@/components/PostsComponents/ListPosts.vue";
 import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
 import { computed, defineComponent, ref } from "vue";
@@ -95,6 +98,8 @@ export default defineComponent({
     const postsStore = usePostsStore();
     const drawer = ref(false);
 
+    const showMessage = computed(() => postsStore.getShowModal);
+    const userId = computed(() => userStore.getId);
     const $router = useRouter();
 
     const isOutUser = () => {
@@ -102,11 +107,12 @@ export default defineComponent({
       postsStore.clearPosts();
     };
     const goToMyPost = () => {
-      const userId = userStore.userData.id;
-      $router.push({ name: "posts", params: { userId } });
+      postsStore.clearPosts();
+      $router.push({ name: "posts", params: { userId: userId.value } });
     };
-    const userId = userStore.userData.id;
-    const showMessage = computed(() => postsStore.getShowModal);
+    const goToMyTodo = () => {
+      $router.push({ name: "todos", params: { userId: userId.value } });
+    };
 
     return {
       isOutUser,
@@ -115,6 +121,7 @@ export default defineComponent({
       showMessage,
       userId,
       goToMyPost,
+      goToMyTodo,
     };
   },
   data: () => ({

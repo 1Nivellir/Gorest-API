@@ -17,7 +17,9 @@ export const getUser = async (id: number): Promise<User> => {
   try {
     const response = await axios.get(url, { headers: HEADERS });
     userData = response.data;
-    userStore.setUserData(userData);
+    if (userStore.userData.id === 0) {
+      userStore.setUserData(userData);
+    }
   } catch (error) {
     console.log("Error:", error);
   }

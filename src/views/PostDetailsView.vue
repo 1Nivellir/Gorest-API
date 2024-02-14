@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-import PostDetails from "@/components/PostDetails.vue";
+import PostDetails from "@/components/PostsComponents/PostDetails.vue";
 export default {
   components: { PostDetails },
 };

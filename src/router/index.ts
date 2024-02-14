@@ -22,17 +22,24 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: "posts/:postId", // Динамический сегмент для id поста
+        path: "posts-details/:postId", // Динамический сегмент для id поста
         name: "post-details",
         components: {
           aboutContent: () => import("@/views/PostDetailsView.vue"),
         },
       },
       {
-        path: "todos",
+        path: "todos/:userId",
         name: "todos",
         components: {
           aboutContent: () => import("@/views/TodoView.vue"),
+        },
+      },
+      {
+        path: "user/:userId",
+        name: "user",
+        components: {
+          aboutContent: () => import("@/views/UserView.vue"),
         },
       },
     ],

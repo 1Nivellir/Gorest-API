@@ -22,13 +22,11 @@
 </template>
 
 <script lang="ts">
-import { HEADERS, URL_USERS } from "@/config";
 import { fetchPost } from "@/helpers/PostService";
 import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
-import axios from "axios";
-import { defineComponent, inject, ref } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
@@ -39,31 +37,23 @@ export default defineComponent({
     const inputBody = ref("");
     const inputTitle = ref("");
     const loading = ref(false);
-    const injectedUserId = inject("userId");
-    const userId = Number(injectedUserId);
 
     const addPost = async () => {
       loading.value = true;
       const id = userStore.userData.id;
-      const url = URL_USERS + id + "/posts/";
       const data = {
         title: inputTitle.value,
         body: inputBody.value,
       };
       try {
-        const response = await axios.post(url, data, {
-          headers: HEADERS,
-        });
-
+        await postsStore.addPost(id, data);
         appStore.setTotalPosts(appStore.postTotal + 1);
         if (appStore.postTotal > 0) {
           const postsPerPage = 5;
           const totalPages = appStore.postTotal / postsPerPage;
           if (appStore.postPages < totalPages) {
             appStore.setCurrentPage(appStore.getPagePosts + 1);
-            await fetchPost(appStore.getPagePosts, userId);
-          } else {
-            postsStore.addPost(response.data);
+            await fetchPost(appStore.getPagePosts, id);
           }
         }
         inputTitle.value = "";

@@ -1,20 +1,92 @@
 <template>
   <v-list-item
-    v-for="n in 3"
-    :key="n"
-    :title="'Item ' + n"
-    subtitle="Lorem ipsum dolor sit amet consectetur adipisicing elit"
-  ></v-list-item>
+    class="custom__item"
+    :class="{
+      'custom__list-item': item.status === 'completed',
+      'another-class': item.status === 'pending',
+    }"
+  >
+    <v-switch
+      v-if="notShow"
+      class="custom__switch"
+      v-model="localStatus"
+      :label="localStatus ? 'Выполнено' : 'Еще не готово...'"
+      :color="localStatus ? 'success' : 'error'"
+      hide-details
+      @change="readyEvent(item.id)"
+    ></v-switch>
+    <v-list-item-title class="custom__item-title">{{
+      item.title
+    }}</v-list-item-title>
+    <actions-btn :item="item" v-if="notShow" />
+  </v-list-item>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { useTodoStore } from "@/store/todos";
+import { useUserStore } from "@/store/user";
+import { PropType, defineComponent, onMounted, ref, watchEffect } from "vue";
+import { useRoute } from "vue-router";
+import ActionsBtn from "../ui/ActionsBtn.vue";
+import { Todo } from "./models";
 
 export default defineComponent({
-  setup() {
-    return {};
+  components: { ActionsBtn },
+  props: {
+    item: {
+      type: Object as PropType<Todo>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const userStore = useUserStore();
+    const route = useRoute();
+    const todoStore = useTodoStore();
+    const localStatus = ref(props.item.status === "completed");
+    const notShow = ref(false);
+
+    onMounted(() => {
+      const params = Array.isArray(route.params.userId)
+        ? route.params.userId[0]
+        : route.params.userId;
+      const userId = parseInt(params, 10);
+      if (userId !== userStore.userId) {
+        notShow.value = false;
+      } else {
+        notShow.value = true;
+      }
+    });
+    watchEffect(() => {
+      localStatus.value = props.item.status === "completed";
+    });
+    const readyEvent = async (id: any) => {
+      const status = localStatus.value ? "completed" : "pending";
+      const data = {
+        title: props.item.title,
+        status: status,
+      };
+      await todoStore.updateTodo(id, data);
+    };
+    return { readyEvent, localStatus, notShow };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom__list-item {
+  background-color: rgb(17, 71, 47);
+}
+.custom__item-title {
+  padding: 15px;
+  color: rgb(255, 255, 255);
+  font-size: 24px;
+  font-weight: 500;
+}
+.custom__item {
+  border-bottom: 1px solid grey;
+  margin-top: 10px;
+}
+.custom__switch {
+  color: rgb(255, 255, 255);
+}
+</style>

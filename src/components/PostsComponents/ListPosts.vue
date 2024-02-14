@@ -19,13 +19,13 @@
 </template>
 
 <script lang="ts">
-import OnePost from "@/components/OnePost.vue";
 import { fetchPost } from "@/helpers/PostService";
 import { useAppStore } from "@/store/app";
 import { useUserStore } from "@/store/user";
 import { computed, inject, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import CreatePost from "./CreatePost.vue";
+import OnePost from "./OnePost.vue";
 
 export default {
   components: { OnePost, CreatePost },
@@ -38,15 +38,16 @@ export default {
     const totalPage = computed(() => appStore.getPages());
     const page = computed(() => appStore.getPagePosts);
     const injectedUserId = inject("userId");
-    const userId = Number(injectedUserId);
+    let userId = Number(injectedUserId);
 
     watch(
       () => route.params.userId,
       async (newVal, oldVal) => {
         const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
-        const userId = parseInt(postIdAsNumber, 10);
+        const userIdNew = parseInt(postIdAsNumber, 10);
         appStore.setCurrentPage(1);
-        await fetchPost(1, userId);
+        userId = userIdNew;
+        await fetchPost(1, userIdNew);
       }
     );
 

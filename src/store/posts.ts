@@ -1,3 +1,4 @@
+import { deletePost, updatePost, createPost } from "@/helpers/PostService";
 import { OnePost } from "@/helpers/Types";
 import { defineStore } from "pinia";
 
@@ -8,6 +9,7 @@ export const usePostsStore = defineStore("posts", {
   }),
   getters: {
     getShowModal: (state) => state.showModal,
+    getPosts: (state) => state.posts,
   },
   actions: {
     getListPost(): OnePost[] {
@@ -19,19 +21,27 @@ export const usePostsStore = defineStore("posts", {
         this.showModal = false;
       }, 3000);
     },
-    addPost(post: OnePost): void {
-      this.posts.push(post);
+    async addPost(id: number, post: OnePost) {
+      const res = await createPost(id, post);
+      this.posts.push(res);
     },
-    removePost(postId: number) {
-      const index = this.posts.findIndex((posts) => posts.id === postId);
-      if (index !== -1) {
-        this.posts.splice(index, 1);
+    async removePost(postId: number) {
+      const status = await deletePost(postId);
+      if (status === 200 || status === 204) {
+        const index = this.posts.findIndex((posts) => posts.id === postId);
+        if (index !== -1) {
+          this.posts.splice(index, 1);
+        }
       }
     },
-    updatePost(updatedPost: OnePost): void {
-      const index = this.posts.findIndex((post) => post.id === updatedPost.id);
-      if (index !== -1) {
-        this.posts[index] = updatedPost;
+    async updatePost(updatedPost: OnePost, id: number): Promise<void> {
+      const status = await updatePost(id, updatedPost);
+      if (status === 200 || status === 201) {
+        const index = this.posts.findIndex((post) => post.id === id);
+        if (index !== -1) {
+          console.log("Post updated successfully");
+          this.posts[index] = updatedPost;
+        }
       }
     },
     setPosts(posts: OnePost[]): void {

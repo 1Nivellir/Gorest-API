@@ -1,52 +1,62 @@
 <template>
-  <v-form validate-on="submit lazy" @submit.prevent="addEventOnServer">
-    <v-text-field v-model="inputEvent" label="User name"></v-text-field>
-
-    <v-btn
-      :loading="loading"
-      type="submit"
-      block
-      color="primary"
-      class="mt-2"
-      text="Submit"
-    ></v-btn>
-  </v-form>
-  <div>
-    <v-switch
-      v-model="ready"
-      label="success"
-      color="success"
-      value="success"
-      hide-details
-    ></v-switch>
-  </div>
-  <TodoList />
+  <v-container>
+    <CreateTodo />
+    <div class="custom__list-item">
+      <TodoList />
+    </div>
+  </v-container>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { fetchTodos, getTodoList } from "@/helpers/TodoService";
+import { useTodoStore } from "@/store/todos";
+import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import CreateTodo from "./CreateTodo.vue";
 import TodoList from "./TodoList.vue";
 
 export default defineComponent({
-  components: { TodoList },
+  components: { TodoList, CreateTodo },
   setup() {
+    const route = useRoute();
     const dialog = ref(false);
-    const inputEvent = ref("");
     const loading = ref(false);
     const ready = ref(false);
+    const todoList = computed(() => todoStore.getTodoList);
+    const todoStore = useTodoStore();
 
-    const addEventOnServer = async () => {
-      loading.value = true;
-    };
+    let userId = inject("userId");
+    onMounted(async () => {
+      if (typeof userId === "number") {
+        await fetchTodos(1, userId);
+      }
+    });
+    watch(
+      () => route.params.userId,
+      async (newVal, oldVal) => {
+        const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
+        const userIdNew = parseInt(postIdAsNumber, 10);
+        todoStore.clearTodos();
+        todoStore.setCurrentPage(1);
+        await fetchTodos(1, userIdNew);
+      }
+    );
+
     return {
       dialog,
-      inputEvent,
       loading,
-      addEventOnServer,
       ready,
+      getTodoList,
+      todoList,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.custom__list-item {
+  padding: 20px 0;
+  border-bottom: 1px solid grey;
+  word-wrap: break-word;
+}
+</style>

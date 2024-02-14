@@ -88,7 +88,7 @@ export default defineComponent({
     };
     const goToUserPosts = (id: number) => {
       const userId = id;
-      $router.push({ name: "posts", params: { userId } });
+      $router.push({ name: "user", params: { userId } });
     };
     onMounted(() => {
       getUsers(1);

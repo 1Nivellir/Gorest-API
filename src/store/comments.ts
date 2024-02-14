@@ -1,3 +1,8 @@
+import {
+  addComment,
+  deleteComment,
+  updateComment,
+} from "@/helpers/CommentsService";
 import { Comments } from "@/helpers/Types";
 import { defineStore } from "pinia";
 
@@ -9,8 +14,9 @@ export const useCommentsStore = defineStore("comments", {
     getListComments: (state) => state.commentsList,
   },
   actions: {
-    addComment(data: Comments) {
-      this.commentsList.push(data);
+    async addComment(id: number, data: string) {
+      const item = await addComment(id, data);
+      this.commentsList.push(item);
     },
     getComment(id: any) {
       const arrComments = this.commentsList.filter(
@@ -21,18 +27,20 @@ export const useCommentsStore = defineStore("comments", {
     setComments(item: any): void {
       this.commentsList = item;
     },
-    removeComment(commentId: any) {
-      const index = this.commentsList.findIndex(
-        (comment) => comment.id === commentId
-      );
-      if (index !== -1) {
-        this.commentsList.splice(index, 1);
+    async removeComment(commentId: number) {
+      const status = await deleteComment(commentId);
+      if (status === 200 || status === 204) {
+        const index = this.commentsList.findIndex(
+          (comment) => comment.id === commentId
+        );
+        if (index !== -1) {
+          this.commentsList.splice(index, 1);
+        }
       }
     },
-    updateComment(updatedComment: Comments): void {
-      const index = this.commentsList.findIndex(
-        (comment) => comment.id === updatedComment.id
-      );
+    async updateComment(id: number, text: string): Promise<void> {
+      const updatedComment = await updateComment(id, text);
+      const index = this.commentsList.findIndex((comment) => comment.id === id);
       if (index !== -1) {
         this.commentsList[index] = updatedComment;
       }

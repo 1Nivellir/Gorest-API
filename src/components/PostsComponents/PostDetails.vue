@@ -130,12 +130,9 @@
 </template>
 
 <script lang="ts">
-import { HEADERS, URL_COMMENTS, URL_POSTS } from "@/config";
-import { deleteComment, getPostDetails } from "@/hooks/postDetails";
+import { getPostDetails } from "@/helpers/CommentsService";
 import { useAppStore } from "@/store/app";
 import { useCommentsStore } from "@/store/comments";
-import { useUserStore } from "@/store/user";
-import axios from "axios";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -143,7 +140,6 @@ export default defineComponent({
   setup() {
     const appStore = useAppStore();
     const commentStore = useCommentsStore();
-    const userStore = useUserStore();
     const route = useRoute();
     const postIdParam = route.params.postId;
     const postIdAsNumber = Array.isArray(postIdParam)
@@ -184,19 +180,9 @@ export default defineComponent({
     });
 
     const addComment = async (id: number) => {
-      const data = {
-        post_id: id,
-        name: userStore.userData.name,
-        email: userStore.userData.email,
-        body: textComment.value,
-      };
       try {
         loading.value = true;
-        const response = await axios.post(URL_POSTS + id + "/comments", data, {
-          headers: HEADERS,
-        });
-        commentStore.addComment(response.data);
-        console.log("Комментарий добавлен:", response.data);
+        await commentStore.addComment(id, textComment.value);
         textComment.value = "";
       } catch (error) {
         console.error("Ошибка при добавлении комментария:", error);
@@ -211,18 +197,13 @@ export default defineComponent({
         textBody.value = comment.body;
       }
     };
-
+    const deleteComment = (id: number) => {
+      commentStore.removeComment(id);
+    };
     const updateComment = async (id: number) => {
-      const data = {
-        body: textBody.value,
-      };
       try {
         goToserver.value = true;
-        const response = await axios.put(URL_COMMENTS + id, data, {
-          headers: HEADERS,
-        });
-        console.log(response);
-        commentStore.updateComment(response.data);
+        commentStore.updateComment(id, textBody.value);
         updateDialog.value = false;
       } catch (error) {
         console.log("Error:", error);

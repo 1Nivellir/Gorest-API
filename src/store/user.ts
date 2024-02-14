@@ -1,6 +1,5 @@
 import { User } from "@/helpers/Types";
 import { defineStore } from "pinia";
-
 export const useUserStore = defineStore("user", {
   state: () => ({
     isAuth: false,
@@ -15,7 +14,7 @@ export const useUserStore = defineStore("user", {
   }),
   getters: {
     getAuth: (state) => state.isAuth,
-    getId: (state) => state.userId,
+    getId: (state) => state.userData.id,
   },
   actions: {
     setUserLocalStorage(data: User) {

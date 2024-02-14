@@ -12,9 +12,9 @@ export type Response = {
 
 export type OnePost = {
   body: string;
-  id: number;
+  id?: number;
   title: string;
-  user_id: number;
+  user_id?: number;
 };
 
 export type Comments = {

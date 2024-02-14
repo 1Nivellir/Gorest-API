@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import ListPosts from "@/components/ListPosts.vue";
+import ListPosts from "@/components/PostsComponents/ListPosts.vue";
 import { provide } from "vue";
 import { useRoute } from "vue-router";
 export default {
