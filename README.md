@@ -1,53 +1,44 @@
-# default
+GOREST API
 
-## Project setup
+Описание:
+Этот проект является пет-проектом, написанным с использованием Vue 3 и TypeScript. Он представляет собой приложение для управления делами, которое использует внешние API для получения информации о постах и других данных.
 
-```
-# yarn
-yarn
+Функциональность
+Просмотр списка дел
+Добавление новых дел
+Редактирование и удаление дел
+Просмотр списка постов
+Редактирование постов
+Удаление постов
+Добавление комментариев к каждому посту, также добавление комментариев для постов других пользователей площадки
+Редактирование комментариев
+Удаление комментариев
+Получение дополнительной информации о посте
+...
+Технологии
+Vue 3
+TypeScript
+Pinia
+Vue-router
+Vuetify
+Axios
+HTML
+SCSS
+...
+Установка
+Клонируйте репозиторий: https://github.com/1Nivellir/Gorest-API.git
 
-# npm
+Установите зависимости:
+cd repository
 npm install
 
-# pnpm
-pnpm install
-
-# bun
-bun install
-```
-
-### Compiles and hot-reloads for development
-
-```
-# yarn
-yarn dev
-
-# npm
+Запустите локальный сервер:
 npm run dev
 
-# pnpm
-pnpm dev
+Откройте ваш браузер и перейдите по адресу http://localhost:5454/
 
-# bun
-bun run dev
-```
+API
+Для работы с данными о постах и другой информацией используется внешнее API. Дополнительную информацию о доступных эндпоинтах можно найти в документации API:[ ссылка на документацию](https://gorest.co.in/).
 
-### Compiles and minifies for production
-
-```
-# yarn
-yarn build
-
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# bun
-bun run build
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+Лицензия
+Этот проект лицензирован по лицензии MIT.
