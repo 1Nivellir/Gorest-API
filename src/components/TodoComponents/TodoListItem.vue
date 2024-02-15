@@ -18,6 +18,9 @@
     <v-list-item-title class="custom__item-title">{{
       item.title
     }}</v-list-item-title>
+    <v-list-item-subtitle class="custom__item-date"
+      >Добавлено: {{ getDate(item.due_on) }}</v-list-item-subtitle
+    >
     <actions-btn :item="item" v-if="notShow" />
   </v-list-item>
 </template>
@@ -28,6 +31,7 @@ import { useUserStore } from "@/store/user";
 import { PropType, defineComponent, onMounted, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import ActionsBtn from "../ui/ActionsBtn.vue";
+import { getDate } from "./helpers";
 import { Todo } from "./models";
 
 export default defineComponent({
@@ -67,7 +71,7 @@ export default defineComponent({
       };
       await todoStore.updateTodo(id, data);
     };
-    return { readyEvent, localStatus, notShow };
+    return { readyEvent, localStatus, notShow, getDate };
   },
 });
 </script>
@@ -88,5 +92,10 @@ export default defineComponent({
 }
 .custom__switch {
   color: rgb(255, 255, 255);
+}
+.custom__item-date {
+  color: rgb(255, 255, 255);
+  font-size: 14px;
+  font-weight: 500;
 }
 </style>
