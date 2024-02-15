@@ -39,24 +39,26 @@ export default defineComponent({
     const goIsUser = async () => {
       dialog.value = false;
       userStore.isAuth = true;
-      if (userData.id) await userStore.setUserData(userData.id);
+      if (userData.id) {
+        await userStore.setUserData(userData.id);
+      }
     };
 
     const user = localStorage.getItem("UserData");
-    onMounted(() => {
+    onMounted(async () => {
       if (user !== null && user !== "") {
         dialog.value = true;
-        getUserInLocalStorage();
+        await getUserInLocalStorage();
       } else {
         dialog.value = false;
       }
     });
 
-    const getUserInLocalStorage = () => {
+    const getUserInLocalStorage = async () => {
       const storedEncodedUserData = localStorage.getItem("UserData");
       if (storedEncodedUserData) {
         try {
-          const decodedUserData = JSON.parse(atob(storedEncodedUserData));
+          const decodedUserData = await JSON.parse(atob(storedEncodedUserData));
           userData.name = decodedUserData.name;
           userData.email = decodedUserData.email;
           userData.id = decodedUserData.id;
