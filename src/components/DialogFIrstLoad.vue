@@ -36,10 +36,10 @@ export default defineComponent({
       id: null,
     });
 
-    const goIsUser = () => {
+    const goIsUser = async () => {
       dialog.value = false;
       userStore.isAuth = true;
-      if (userData.id) userStore.setUserData(userData.id);
+      if (userData.id) await userStore.setUserData(userData.id);
     };
 
     const user = localStorage.getItem("UserData");
