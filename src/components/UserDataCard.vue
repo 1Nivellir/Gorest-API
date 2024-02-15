@@ -44,7 +44,7 @@
 <script lang="ts">
 import { useUserStore } from "@/store/user";
 import { computed, ref } from "vue";
-import ModalUpdateUser from "./ModalUpdateUser.vue";
+import ModalUpdateUser from "./ui/ModalUpdateUser.vue";
 export default {
   components: { ModalUpdateUser },
   setup() {

@@ -81,8 +81,8 @@ import { usePostsStore } from "@/store/posts";
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
 import { computed, defineComponent, ref } from "vue";
-import ModalAuthUser from "./ModalAuthUser.vue";
-import ModalCreateUser from "./ModalCreateUser.vue";
+import ModalAuthUser from "./ui/ModalAuthUser.vue";
+import ModalCreateUser from "./ui/ModalCreateUser.vue";
 import UserDataCard from "./UserDataCard.vue";
 
 import { useRouter } from "vue-router";
