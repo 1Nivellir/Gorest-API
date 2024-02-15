@@ -77,9 +77,7 @@
 </template>
 
 <script lang="ts">
-import { HEADERS, URL_USERS } from "@/config";
 import { useUserStore } from "@/store/user";
-import axios from "axios";
 import { ref } from "vue";
 
 export default {
@@ -98,8 +96,6 @@ export default {
     };
 
     const updateUser = async () => {
-      const url = URL_USERS + userStore.userData.id;
-
       const data = {
         name: currentName.value,
         email: currentEmail.value,
@@ -109,14 +105,8 @@ export default {
       };
 
       try {
-        const response = await axios.put(url, data, {
-          headers: HEADERS,
-        });
-        console.log("User updated:", response.data);
-        userStore.setUserData(data);
+        await userStore.updateUser(data);
         updateDialog.value = false;
-
-        userStore.setUserData(response.data);
       } catch (error) {
         console.log("Error:", error);
       }

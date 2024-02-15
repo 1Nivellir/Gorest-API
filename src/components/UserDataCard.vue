@@ -42,7 +42,6 @@
 </template>
 
 <script lang="ts">
-import { deleteUser as deleteUserService } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
 import { computed, ref } from "vue";
 import ModalUpdateUser from "./ModalUpdateUser.vue";
@@ -51,8 +50,9 @@ export default {
   setup() {
     const userStore = useUserStore();
     const show = ref(false);
-    const deleteUser = () => {
-      deleteUserService();
+    const deleteUser = async () => {
+      const id = userStore.userData.id;
+      await userStore.removeUser(id);
     };
     const gender = computed(() => {
       return userStore.userData.gender === "male" ? "Мужской" : "Женский";

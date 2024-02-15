@@ -6,6 +6,7 @@ export type User = {
   status: string;
 };
 
+export type CreateUser = Omit<User, "id">;
 export type Response = {
   data: User;
 };

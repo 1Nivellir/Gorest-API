@@ -117,7 +117,7 @@ export default defineComponent({
         textTooltip.value = "дело";
       }
     });
-    const examinationId = (userId: any) => {
+    const examinationId = (userId: number) => {
       const userIdStore = userStore.userData.id;
       if (userIdStore !== userId) {
         showBtn.value = false;

@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <CreateTodo />
+    <CreateTodo v-if="userStore.isAuth" />
     <div class="custom__list-item">
       <TodoList />
     </div>
@@ -10,14 +10,15 @@
 <script lang="ts">
 import { fetchTodos, getTodoList } from "@/helpers/TodoService";
 import { useTodoStore } from "@/store/todos";
+import { useUserStore } from "@/store/user";
 import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import CreateTodo from "./CreateTodo.vue";
 import TodoList from "./TodoList.vue";
-
 export default defineComponent({
   components: { TodoList, CreateTodo },
   setup() {
+    const userStore = useUserStore();
     const route = useRoute();
     const dialog = ref(false);
     const loading = ref(false);
@@ -48,6 +49,7 @@ export default defineComponent({
       ready,
       getTodoList,
       todoList,
+      userStore,
     };
   },
 });

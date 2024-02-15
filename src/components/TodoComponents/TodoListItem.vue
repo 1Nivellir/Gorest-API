@@ -50,7 +50,7 @@ export default defineComponent({
         ? route.params.userId[0]
         : route.params.userId;
       const userId = parseInt(params, 10);
-      if (userId !== userStore.userId) {
+      if (userId !== userStore.userData.id) {
         notShow.value = false;
       } else {
         notShow.value = true;

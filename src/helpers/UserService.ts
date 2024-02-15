@@ -1,9 +1,6 @@
 import { HEADERS, URL_USERS } from "@/config";
-import { useUserStore } from "@/store/user";
 import axios from "axios";
-import { User } from "./Types";
-
-const userStore = useUserStore();
+import { User, CreateUser } from "./Types";
 
 export const getUser = async (id: number): Promise<User> => {
   const url = URL_USERS + id;
@@ -17,32 +14,78 @@ export const getUser = async (id: number): Promise<User> => {
   try {
     const response = await axios.get(url, { headers: HEADERS });
     userData = response.data;
-    if (userStore.userData.id === 0) {
-      userStore.setUserData(userData);
-    }
   } catch (error) {
     console.log("Error:", error);
   }
   return userData;
 };
 
-export const deleteUser = async () => {
-  const id = userStore.userData.id;
+export const deleteUser = async (id: number) => {
   const url = URL_USERS + id;
   try {
     const response = await axios.delete(url, { headers: HEADERS });
     if (response.status === 204) {
       localStorage.removeItem("UserData");
-      userStore.isAuth = false;
-      userStore.setUserData({
-        id: 0,
-        email: "",
-        gender: "",
-        name: "",
-        status: "",
-      });
     }
+    return response.status;
   } catch (error) {
     console.log("Error:", error);
   }
 };
+
+export async function getIsAuth(id: number): Promise<User> {
+  const url = URL_USERS + id;
+  let user = {
+    id: 0,
+    email: "",
+    gender: "",
+    name: "",
+    status: "",
+  };
+  try {
+    const response = await axios.get(url, { headers: HEADERS });
+    if (response.status === 200 || response.status === 201) {
+      user = await response.data;
+    }
+  } catch (error) {
+    console.log("Error:", error);
+  }
+  return user;
+}
+
+export async function updateUser(id: number, user: User) {
+  const url = URL_USERS + id;
+  const data = {
+    name: user.name,
+    email: user.email,
+    status: user.status,
+    gender: user.gender,
+    id: user.id,
+  };
+  try {
+    const response = await axios.put(url, data, {
+      headers: HEADERS,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Error:", error);
+  }
+}
+
+export async function createUser(user: CreateUser) {
+  const url = URL_USERS;
+  const data = {
+    name: user.name,
+    email: user.email,
+    gender: user.gender,
+    status: user.status,
+  };
+  try {
+    const response = await axios.post(url, data, {
+      headers: HEADERS,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("Error:", error);
+  }
+}

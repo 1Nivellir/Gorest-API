@@ -78,6 +78,7 @@
 <script lang="ts">
 import listPosts from "@/components/PostsComponents/ListPosts.vue";
 import { usePostsStore } from "@/store/posts";
+import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
 import { computed, defineComponent, ref } from "vue";
 import ModalAuthUser from "./ModalAuthUser.vue";
@@ -94,6 +95,7 @@ export default defineComponent({
     UserDataCard,
   },
   setup() {
+    const todoStore = useTodoStore();
     const userStore = useUserStore();
     const postsStore = usePostsStore();
     const drawer = ref(false);
@@ -105,6 +107,7 @@ export default defineComponent({
     const isOutUser = () => {
       userStore.outUser();
       postsStore.clearPosts();
+      todoStore.clearTodos();
     };
     const goToMyPost = () => {
       postsStore.clearPosts();

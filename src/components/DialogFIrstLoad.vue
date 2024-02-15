@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts">
-import { getUser } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
 import { defineComponent, onMounted, reactive, ref } from "vue";
 
@@ -40,8 +39,7 @@ export default defineComponent({
     const goIsUser = () => {
       dialog.value = false;
       userStore.isAuth = true;
-      if (userData.id) getUser(userData.id);
-      userStore.getAuthTrue();
+      if (userData.id) userStore.setUserData(userData.id);
     };
 
     const user = localStorage.getItem("UserData");
@@ -59,7 +57,6 @@ export default defineComponent({
       if (storedEncodedUserData) {
         try {
           const decodedUserData = JSON.parse(atob(storedEncodedUserData));
-          userStore.getUserId(decodedUserData.id);
           userData.name = decodedUserData.name;
           userData.email = decodedUserData.email;
           userData.id = decodedUserData.id;

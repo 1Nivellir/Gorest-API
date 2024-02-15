@@ -41,31 +41,22 @@
 </template>
 
 <script lang="ts">
-import { HEADERS, URL_USERS } from "@/config";
-import { User } from "@/helpers/Types";
-import { getUser } from "@/helpers/UserService";
 import { useUserStore } from "@/store/user";
-import axios from "axios";
 import { ref } from "vue";
 export default {
   setup() {
     const modalAuth = ref(false);
-    const getUserId = ref(null);
-
+    const getUserId = ref<number | null>(null);
+    const userStore = useUserStore();
     const getIsAuth = async () => {
       const id = getUserId.value;
-      const userStore = useUserStore();
-      const url = URL_USERS + id;
-      try {
-        const response = await axios.get(url, { headers: HEADERS });
-        const userData: User = response.data;
-        modalAuth.value = false;
-        userStore.setUserData(userData);
-        userStore.getAuthTrue();
-        if (id) getUser(id);
-        console.log(response.data);
-      } catch (error) {
-        console.log("Error:", error);
+      if (id) {
+        try {
+          await userStore.setUserData(id);
+          modalAuth.value = false;
+        } catch (error) {
+          console.log("Error:", error);
+        }
       }
     };
 

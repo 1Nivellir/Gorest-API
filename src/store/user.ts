@@ -1,4 +1,10 @@
-import { User } from "@/helpers/Types";
+import { CreateUser, User } from "@/helpers/Types";
+import {
+  createUser,
+  deleteUser,
+  getIsAuth,
+  updateUser,
+} from "@/helpers/UserService";
 import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -21,10 +27,25 @@ export const useUserStore = defineStore("user", {
       const encodedUserData = btoa(JSON.stringify(data));
       localStorage.setItem("UserData", encodedUserData);
     },
-    setUserData(userData: User) {
-      this.userData = userData;
+    async updateUser(data: User) {
+      const user = await updateUser(this.userData.id, data);
+      this.userData = user;
     },
-    getUserData(): object {
+    async createUser(data: CreateUser) {
+      const user = await createUser(data);
+      this.userData = user;
+      this.isAuth = true;
+      this.setUserLocalStorage(user);
+    },
+    async setUserData(id: number) {
+      const user = await getIsAuth(id);
+      if (user && typeof user.id === "number") {
+        this.userData = user;
+      }
+      this.userData = user;
+      this.isAuth = true;
+    },
+    getUserData(): User {
       return this.userData;
     },
     outUser() {
@@ -40,11 +61,17 @@ export const useUserStore = defineStore("user", {
     getUserId(id: number) {
       this.userId = id;
     },
+    async removeUser(id: number) {
+      const status = await deleteUser(id);
+      if (status === 204) {
+        this.outUser();
+        this.getAuthFalse();
+      }
+    },
     getAuthTrue() {
       this.isAuth = true;
     },
     getAuthFalse() {
-      console.log("Что-то не то...");
       this.isAuth = false;
     },
   },

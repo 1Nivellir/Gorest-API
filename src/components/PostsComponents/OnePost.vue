@@ -29,19 +29,7 @@
 
 <script lang="ts">
 import { OnePost } from "@/helpers/Types";
-import {
-  onBeforeEnter,
-  onBeforeEnter1,
-  onBeforeEnter2,
-  onEnter,
-  onEnter1,
-  onEnter2,
-  onLeave,
-  onLeave1,
-  onLeave2,
-} from "@/helpers/animation";
 import { usePostsStore } from "@/store/posts";
-
 import { Ref, onMounted, reactive, ref, watch } from "vue";
 import ActionsBtn from "../ui/ActionsBtn.vue";
 export default {
@@ -82,15 +70,6 @@ export default {
       textTitle,
       showDeleteText,
       posts,
-      onBeforeEnter1,
-      onEnter1,
-      onLeave1,
-      onBeforeEnter,
-      onEnter,
-      onLeave,
-      onBeforeEnter2,
-      onEnter2,
-      onLeave2,
       overlay,
     };
   },

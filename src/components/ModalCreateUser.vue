@@ -62,9 +62,7 @@
 </template>
 
 <script lang="ts">
-import { HEADERS, URL_USERS } from "@/config";
 import { useUserStore } from "@/store/user";
-import axios from "axios";
 import { reactive, ref } from "vue";
 export default {
   setup() {
@@ -81,23 +79,17 @@ export default {
       { state: "Женский", abbr: "female" },
     ]);
 
+    const userStore = useUserStore();
     const createUser = async () => {
-      const userStore = useUserStore();
-      const url = URL_USERS;
       const data = {
         name: name.value,
         email: email.value,
-        gender: selectedGender.value ? selectedGender.value.abbr : null,
+        gender: selectedGender.value ? selectedGender.value.abbr : "",
         status: "active",
       };
       try {
-        const response = await axios.post(url, data, {
-          headers: HEADERS,
-        });
-        userStore.setUserLocalStorage(response.data);
+        await userStore.createUser(data);
         dialog.value = false;
-        userStore.isAuth = true;
-        userStore.setUserData(response.data);
       } catch (error) {
         console.log("Error:", error);
       }
