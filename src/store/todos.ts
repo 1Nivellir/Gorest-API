@@ -1,7 +1,8 @@
-import { Todo, CreateTodo } from "@/components/TodoComponents/models";
+import { CreateTodo, Todo } from "@/components/TodoComponents/models";
 import {
   createEvent,
   deleteEvent,
+  fetchTodos,
   getTodoList,
   updateEvent,
 } from "@/helpers/TodoService";
@@ -22,9 +23,6 @@ export const useTodoStore = defineStore("todo", {
   actions: {
     setCurrentPage(page: number) {
       this.currentPage = page;
-    },
-    setTodoList(data: Todo[]) {
-      this.todoList = data;
     },
     setTotalTodos(total: number) {
       this.total = total;
@@ -52,8 +50,13 @@ export const useTodoStore = defineStore("todo", {
         this.todoList.splice(index, 1);
       }
     },
+    async setTodoList(id: number, page: number) {
+      const item = await fetchTodos(id, page);
+      this.todoList = item;
+    },
     clearTodos() {
       this.todoList = [];
+      (this.currentPage = 1), (this.total = 0), (this.pages = 1);
     },
   },
 });

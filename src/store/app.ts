@@ -1,18 +1,18 @@
 // Utilities
 import { defineStore } from "pinia";
+import { getUsers } from "@/helpers/AllUserService";
+import { User } from "@/components/UserDetails/models";
 
 export const useAppStore = defineStore("app", {
   state: () => ({
-    postPage: 1,
-    postTotal: 0,
-    postPages: 1,
     animationInProgress: false,
     usersPage: 1,
     usersTotal: 0,
     usersPages: 1,
+    usersList: [] as User[],
   }),
   getters: {
-    getPagePosts: (state) => state.postPage,
+    getListUsers: (state) => state.usersList,
     getPageUsers: (state) => state.usersPage,
   },
   actions: {
@@ -22,18 +22,7 @@ export const useAppStore = defineStore("app", {
     endAnimation() {
       this.animationInProgress = false;
     },
-    setTotalPosts(total: number) {
-      this.postTotal = total;
-    },
-    setCurrentPage(page: number) {
-      this.postPage = page;
-    },
-    setPages(count: number) {
-      this.postPages = count;
-    },
-    getPages() {
-      return this.postPages;
-    },
+
     setTotalUsers(total: number) {
       this.usersTotal = total;
     },
@@ -45,6 +34,10 @@ export const useAppStore = defineStore("app", {
     },
     getPagesUsers() {
       return this.usersPages;
+    },
+    async getAllUsers(page: number) {
+      const item = await getUsers(page);
+      this.usersList = item;
     },
   },
 });

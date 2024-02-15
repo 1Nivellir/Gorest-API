@@ -62,8 +62,6 @@
 </template>
 
 <script lang="ts">
-import { fetchPost } from "@/helpers/PostService";
-import { fetchTodos } from "@/helpers/TodoService";
 import {
   onBeforeEnter,
   onBeforeEnter2,
@@ -72,7 +70,6 @@ import {
   onLeave,
   onLeave2,
 } from "@/helpers/animation";
-import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
@@ -92,10 +89,7 @@ export default defineComponent({
     const route = useRoute();
     const userStore = useUserStore();
     const todoStore = useTodoStore();
-    const appStore = useAppStore();
     const postsStore = usePostsStore();
-    const injectedUserId = inject("userId");
-    const userId = Number(injectedUserId);
     const $router = useRouter();
     const showDelete = ref(false);
     const showActions = ref(false);
@@ -130,15 +124,19 @@ export default defineComponent({
 
     const deleteItem = async () => {
       confirm("Delete?");
+      const idParams = route.params.userId;
+      const getId = Array.isArray(idParams) ? idParams[0] : idParams;
+      const id = parseInt(getId, 10);
       if (route.path.includes("posts")) {
         try {
           await postsStore.removePost(item.id);
-          appStore.setTotalPosts(appStore.postTotal - 1);
+          postsStore.setTotalPosts(postsStore.postTotal - 1);
           const postsPerPage = 5;
-          const totalPages = appStore.postTotal / postsPerPage;
-          if (appStore.postPages - 1 === totalPages) {
-            appStore.setCurrentPage(appStore.getPagePosts - 1);
-            await fetchPost(appStore.getPagePosts, userId);
+          const totalPages = postsStore.postTotal / postsPerPage;
+          if (postsStore.postPages - 1 === totalPages) {
+            postsStore.setCurrentPage(postsStore.getPagePosts - 1);
+            console.log(id);
+            await postsStore.setPosts(postsStore.getPagePosts, id);
           }
         } catch (error) {
           console.log("Error:", error);
@@ -152,7 +150,7 @@ export default defineComponent({
           const totalPages = todoStore.total / todoPerPage;
           if (todoStore.pages - 1 === totalPages) {
             todoStore.setCurrentPage(todoStore.getCurrentPage - 1);
-            await fetchTodos(todoStore.getCurrentPage, userId);
+            await todoStore.setTodoList(todoStore.getCurrentPage, id);
           }
         } catch (error) {
           console.log("Error:", error);

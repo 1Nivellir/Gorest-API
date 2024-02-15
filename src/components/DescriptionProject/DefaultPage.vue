@@ -38,10 +38,7 @@
 </template>
 
 <script lang="ts">
-import { User } from "@/components/UserDetails/models";
-import { HEADERS, URL_USERS } from "@/config";
 import { useAppStore } from "@/store/app";
-import axios from "axios";
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -51,47 +48,26 @@ export default defineComponent({
     const totalPage = computed(() => appStore.getPagesUsers());
     const page = computed(() => appStore.getPageUsers);
     const $router = useRouter();
-    const listUsers = ref<User[]>([]);
+    const listUsers = computed(() => appStore.getListUsers);
     const overlay = ref(false);
-
-    const getUsers = async (page: number) => {
-      const limit = 10;
-      overlay.value = true;
-      try {
-        const response = await axios.get(URL_USERS, {
-          params: {
-            page: page,
-            per_page: limit,
-          },
-          headers: HEADERS,
-        });
-        listUsers.value = response.data;
-        const totalPages = Math.ceil(
-          response.headers["x-pagination-total"] / limit
-        );
-        const totalPosts = parseInt(response.headers["x-pagination-total"]);
-        appStore.setTotalUsers(totalPosts);
-        appStore.getPages();
-        if (totalPages > 0) {
-          appStore.setPagesUsers(totalPages);
-        }
-      } catch (error) {
-        console.log("Error:", error);
-      } finally {
-        overlay.value = false;
-      }
-    };
 
     const changePage = async (count: number) => {
       appStore.setCurrentPageUsers(count);
-      await getUsers(count);
+      await appStore.getAllUsers(count);
     };
     const goToUserPosts = (id: number) => {
       const userId = id;
       $router.push({ name: "user", params: { userId } });
     };
-    onMounted(() => {
-      getUsers(1);
+    onMounted(async () => {
+      try {
+        overlay.value = true;
+        await appStore.getAllUsers(1);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        overlay.value = false;
+      }
     });
     return { listUsers, goToUserPosts, totalPage, page, changePage, overlay };
   },

@@ -1,15 +1,26 @@
-import { createPost, deletePost, updatePost } from "@/helpers/PostService";
 import { OnePost, UpdatePost } from "@/components/PostsComponents/models";
+import {
+  createPost,
+  deletePost,
+  fetchPost,
+  updatePost,
+} from "@/helpers/PostService";
 import { defineStore } from "pinia";
 
 export const usePostsStore = defineStore("posts", {
   state: () => ({
     posts: [] as OnePost[],
     showModal: false,
+
+    postPage: 1,
+    postTotal: 0,
+    postPages: 1,
   }),
   getters: {
     getShowModal: (state) => state.showModal,
+    getPagePosts: (state) => state.postPage,
     getPosts: (state) => state.posts,
+    getPages: (state) => state.postPages,
   },
   actions: {
     getListPost(): OnePost[] {
@@ -44,11 +55,22 @@ export const usePostsStore = defineStore("posts", {
         }
       }
     },
-    setPosts(posts: OnePost[]) {
-      this.posts = posts;
+    async setPosts(page: number, id: number) {
+      const item = await fetchPost(page, id);
+      this.posts = item;
     },
     clearPosts() {
       this.posts = [];
+      (this.postPage = 1), (this.postTotal = 0), (this.postPages = 1);
+    },
+    setTotalPosts(total: number) {
+      this.postTotal = total;
+    },
+    setCurrentPage(page: number) {
+      this.postPage = page;
+    },
+    setPages(count: number) {
+      this.postPages = count;
     },
   },
 });

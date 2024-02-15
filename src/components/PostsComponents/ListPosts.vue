@@ -19,8 +19,8 @@
 </template>
 
 <script lang="ts">
-import { fetchPost } from "@/helpers/PostService";
 import { useAppStore } from "@/store/app";
+import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
 import { computed, inject, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -31,32 +31,44 @@ export default {
   components: { OnePost, CreatePost },
 
   setup() {
+    const postStore = usePostsStore();
     const route = useRoute();
     const appStore = useAppStore();
     const limit = 5;
     const userStore = useUserStore();
-    const totalPage = computed(() => appStore.getPages());
-    const page = computed(() => appStore.getPagePosts);
+    const totalPage = computed(() => postStore.getPages);
+    const page = computed(() => postStore.getPagePosts);
     const injectedUserId = inject("userId");
     let userId = Number(injectedUserId);
-
+    const isAuth = userStore.getAuth;
     watch(
       () => route.params.userId,
-      async (newVal, oldVal) => {
+      async (newVal) => {
         const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
         const userIdNew = parseInt(postIdAsNumber, 10);
-        appStore.setCurrentPage(1);
+        postStore.setCurrentPage(1);
+        postStore.clearPosts();
         userId = userIdNew;
-        await fetchPost(1, userIdNew);
+        await postStore.setPosts(1, userIdNew);
       }
     );
 
+    watch(
+      () => userStore.getAuth,
+      async (newVal) => {
+        if (newVal) {
+          await postStore.setPosts(1, userId);
+        }
+      }
+    );
     const changePost = async (count: number) => {
-      appStore.setCurrentPage(count);
-      await fetchPost(count, userId);
+      postStore.setCurrentPage(count);
+      await postStore.setPosts(count, userId);
     };
     onMounted(async () => {
-      await fetchPost(1, userId);
+      if (isAuth) {
+        await postStore.setPosts(1, userId);
+      }
     });
     return {
       totalPage,

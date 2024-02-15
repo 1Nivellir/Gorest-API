@@ -23,14 +23,12 @@
 
 <script lang="ts">
 import { fetchPost } from "@/helpers/PostService";
-import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
-    const appStore = useAppStore();
     const userStore = useUserStore();
     const postsStore = usePostsStore();
 
@@ -47,13 +45,13 @@ export default defineComponent({
       };
       try {
         await postsStore.addPost(id, data);
-        appStore.setTotalPosts(appStore.postTotal + 1);
-        if (appStore.postTotal > 0) {
+        postsStore.setTotalPosts(postsStore.postTotal + 1);
+        if (postsStore.postTotal > 0) {
           const postsPerPage = 5;
-          const totalPages = appStore.postTotal / postsPerPage;
-          if (appStore.postPages < totalPages) {
-            appStore.setCurrentPage(appStore.getPagePosts + 1);
-            await fetchPost(appStore.getPagePosts, id);
+          const totalPages = postsStore.postTotal / postsPerPage;
+          if (postsStore.postPages < totalPages) {
+            postsStore.setCurrentPage(postsStore.getPagePosts + 1);
+            await postsStore.setPosts(postsStore.getPagePosts, id);
           }
         }
         inputTitle.value = "";

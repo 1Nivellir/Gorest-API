@@ -17,7 +17,6 @@
 </template>
 
 <script lang="ts">
-import { fetchTodos } from "@/helpers/TodoService";
 import { useTodoStore } from "@/store/todos";
 import { computed, defineComponent, inject, watch } from "vue";
 import { useRoute } from "vue-router";
@@ -26,7 +25,7 @@ import TodoListItem from "./TodoListItem.vue";
 export default defineComponent({
   components: { TodoListItem },
 
-  setup(props) {
+  setup() {
     const route = useRoute();
     const injectedUserId = inject("userId");
     let userId = Number(injectedUserId);
@@ -36,7 +35,7 @@ export default defineComponent({
     const todoList = computed(() => todoStore.getTodoList);
     watch(
       () => route.params.userId,
-      (newVal, olVal) => {
+      (newVal) => {
         const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
         const userIdNew = parseInt(postIdAsNumber, 10);
         userId = userIdNew;
@@ -44,7 +43,7 @@ export default defineComponent({
     );
     const changeEvents = async (count: number) => {
       todoStore.setCurrentPage(count);
-      await fetchTodos(count, userId);
+      await todoStore.setTodoList(count, userId);
     };
     return { totalPage, page, changeEvents, todoList };
   },

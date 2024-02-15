@@ -1,62 +1,35 @@
 import { OnePost, UpdatePost } from "@/components/PostsComponents/models";
 import { HEADERS, URL_POSTS, URL_USERS } from "@/config";
-import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
-import { useUserStore } from "@/store/user";
 import axios from "axios";
-import { computed, watch } from "vue";
 
-export const fetchPost = async (page: number, id: number) => {
-  const postsStore = usePostsStore();
-  const userStore = useUserStore();
-  const appStore = useAppStore();
+export async function fetchPost(page: number, id: number): Promise<OnePost[]> {
+  const postStore = usePostsStore();
   const limit = 5;
-  const userAuth = computed(() => userStore.getAuth);
-
-  watch(
-    userAuth,
-    async (isAuth) => {
-      if (isAuth) {
-        try {
-          const url = URL_USERS + id + "/posts";
-          const response = await axios.get(url, {
-            params: {
-              page: page,
-              per_page: limit,
-            },
-            headers: HEADERS,
-          });
-          const totalPages = Math.ceil(
-            response.headers["x-pagination-total"] / limit
-          );
-          const totalPosts = parseInt(response.headers["x-pagination-total"]);
-          appStore.setTotalPosts(totalPosts);
-          appStore.getPages();
-          postsStore.setPosts(response.data);
-          if (totalPages > 0) {
-            appStore.setPages(totalPages);
-          }
-        } catch (error) {
-          console.log("Error:", error);
-        }
-      }
-    },
-    { immediate: true }
-  );
-};
-
-export async function getPosts(id: number): Promise<OnePost[]> {
-  let posts = [];
   const url = URL_USERS + id + "/posts";
+  let data = [] as OnePost[];
   try {
     const response = await axios.get(url, {
+      params: {
+        page: page,
+        per_page: limit,
+      },
       headers: HEADERS,
     });
-    posts = await response.data;
+    const totalPages = Math.ceil(
+      response.headers["x-pagination-total"] / limit
+    );
+    const totalPosts = parseInt(response.headers["x-pagination-total"]);
+    postStore.setTotalPosts(totalPosts);
+    postStore.getPages;
+    data = await response.data;
+    if (totalPages > 0) {
+      postStore.setPages(totalPages);
+    }
   } catch (error) {
     console.log(error);
   }
-  return posts;
+  return Promise.resolve(data);
 }
 
 export async function updatePost(
@@ -105,4 +78,17 @@ export async function createPost(
     console.error("Error:", error);
   }
   return post;
+}
+export async function getPosts(id: number): Promise<OnePost[]> {
+  let posts = [];
+  const url = URL_USERS + id + "/posts";
+  try {
+    const response = await axios.get(url, {
+      headers: HEADERS,
+    });
+    posts = await response.data;
+  } catch (error) {
+    console.log(error);
+  }
+  return posts;
 }

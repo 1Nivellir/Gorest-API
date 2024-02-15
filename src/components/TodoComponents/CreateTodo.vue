@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-import { fetchTodos } from "@/helpers/TodoService";
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
 import { defineComponent, ref } from "vue";
@@ -42,7 +41,7 @@ export default defineComponent({
           const totalPages = todoStore.total / postsPerPage;
           if (todoStore.pages < totalPages) {
             todoStore.setCurrentPage(todoStore.getCurrentPage + 1);
-            await fetchTodos(todoStore.getCurrentPage, id);
+            await todoStore.setTodoList(todoStore.getCurrentPage, id);
           }
         }
       } catch (error: any) {

@@ -8,7 +8,6 @@
 </template>
 
 <script lang="ts">
-import { fetchTodos, getTodoList } from "@/helpers/TodoService";
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
 import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
@@ -25,21 +24,33 @@ export default defineComponent({
     const ready = ref(false);
     const todoList = computed(() => todoStore.getTodoList);
     const todoStore = useTodoStore();
+    const isAuth = userStore.getAuth;
+    let injectedUserId = inject("userId");
+    const userId = Number(injectedUserId);
 
-    let userId = inject("userId");
+    watch(
+      () => userStore.getAuth,
+      async (newVal) => {
+        if (newVal) {
+          await todoStore.setTodoList(1, userId);
+        }
+      }
+    );
     onMounted(async () => {
-      if (typeof userId === "number") {
-        await fetchTodos(1, userId);
+      if (isAuth) {
+        if (typeof userId === "number") {
+          await todoStore.setTodoList(1, userId);
+        }
       }
     });
     watch(
       () => route.params.userId,
-      async (newVal, oldVal) => {
+      async (newVal) => {
         const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
         const userIdNew = parseInt(postIdAsNumber, 10);
         todoStore.clearTodos();
         todoStore.setCurrentPage(1);
-        await fetchTodos(1, userIdNew);
+        await todoStore.setTodoList(1, userIdNew);
       }
     );
 
@@ -47,7 +58,6 @@ export default defineComponent({
       dialog,
       loading,
       ready,
-      getTodoList,
       todoList,
       userStore,
     };
