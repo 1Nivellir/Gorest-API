@@ -1,3 +1,4 @@
+import { OnePost, UpdatePost } from "@/components/PostsComponents/models";
 import { HEADERS, URL_POSTS, URL_USERS } from "@/config";
 import { useAppStore } from "@/store/app";
 import { usePostsStore } from "@/store/posts";
@@ -44,50 +45,64 @@ export const fetchPost = async (page: number, id: number) => {
   );
 };
 
-export async function getPosts(id: number) {
+export async function getPosts(id: number): Promise<OnePost[]> {
   let posts = [];
   const url = URL_USERS + id + "/posts";
   try {
     const response = await axios.get(url, {
       headers: HEADERS,
     });
-    posts = response.data;
+    posts = await response.data;
   } catch (error) {
     console.log(error);
   }
   return posts;
 }
 
-export async function updatePost(id: number, data: any) {
+export async function updatePost(
+  id: number,
+  data: UpdatePost
+): Promise<{ status: number; post: OnePost }> {
   const url = URL_POSTS + id;
+  let status = 0;
+  let post: OnePost = {} as OnePost;
   try {
     const response = await axios.put(url, data, { headers: HEADERS });
-    return response.status;
+    status = response.status;
+    post = await response.data;
   } catch (error) {
     console.log("Error:", error);
   }
+  return { status, post };
 }
 
-export async function deletePost(id: number) {
+export async function deletePost(id: number): Promise<number> {
   const url = URL_POSTS + id;
+  let status = 0;
   try {
     const response = await axios.delete(url, { headers: HEADERS });
-    return response.status;
+    status = response.status;
   } catch (error) {
     console.log("Error:", error);
   }
+  return status;
 }
 
-export async function createPost(id: number, data: any) {
+export async function createPost(
+  id: number,
+  data: UpdatePost
+): Promise<OnePost> {
   const url = URL_USERS + id + "/posts/";
+  let post = {} as OnePost;
   try {
     const response = await axios.post(url, data, {
       headers: HEADERS,
     });
     if (response.status === 201 || response.status === 200) {
-      return response.data;
+      post = await response.data;
     }
   } catch (error: any) {
     console.error("Error:", error);
   }
+  return post;
 }

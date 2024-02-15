@@ -1,4 +1,4 @@
-import { CreateUser, User } from "@/helpers/Types";
+import { CreateUser, User } from "@/components/UserDetails/models";
 import {
   createUser,
   deleteUser,

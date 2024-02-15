@@ -38,8 +38,8 @@
 </template>
 
 <script lang="ts">
+import { User } from "@/components/UserDetails/models";
 import { HEADERS, URL_USERS } from "@/config";
-import { User } from "@/helpers/Types";
 import { useAppStore } from "@/store/app";
 import axios from "axios";
 import { computed, defineComponent, onMounted, ref } from "vue";
@@ -112,4 +112,3 @@ export default defineComponent({
   background-color: #06589c;
 }
 </style>
-@/helpers/Types

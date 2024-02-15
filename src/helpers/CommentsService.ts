@@ -1,5 +1,5 @@
+import { PostDetails, Comments } from "@/components/PostsComponents/models";
 import { HEADERS, URL_COMMENTS, URL_POSTS } from "@/config";
-import { Comments } from "@/helpers/Types";
 import { getUser } from "@/helpers/UserService";
 import { useCommentsStore } from "@/store/comments";
 import { useUserStore } from "@/store/user";
@@ -8,16 +8,7 @@ import axios from "axios";
 const userStore = useUserStore();
 const commentStore = useCommentsStore();
 
-export type PostDetails = {
-  postTitle: string;
-  postBody: string;
-  userName: string;
-  userEmail: string;
-  commentsList: Comments[];
-  showData: boolean;
-};
-
-export async function getPostDetails(id: number) {
+export async function getPostDetails(id: number): Promise<PostDetails> {
   const commentsDetails: PostDetails = {
     showData: false,
     commentsList: [],
@@ -55,47 +46,59 @@ export async function getPostDetails(id: number) {
   return commentsDetails;
 }
 
-export const addComment = async (id: number, textComment: string) => {
+export async function addCommentToServer(
+  id: number,
+  textComment: string
+): Promise<Comments> {
   const data = {
     post_id: id,
     name: userStore.userData.name,
     email: userStore.userData.email,
     body: textComment,
   };
+  let newData = {} as Comments;
   try {
     const response = await axios.post(URL_POSTS + id + "/comments", data, {
       headers: HEADERS,
     });
     if (response.status === 201 || response.status === 200) {
-      return response.data;
+      newData = await response.data;
     }
   } catch (error) {
     console.error("Ошибка при добавлении комментария:", error);
   }
-};
-export const updateComment = async (id: number, text: string) => {
+  return newData;
+}
+export const updateComment = async (
+  id: number,
+  text: string
+): Promise<Comments> => {
   const data = {
     body: text,
   };
+  let newData = {} as Comments;
   try {
     const response = await axios.put(URL_COMMENTS + id, data, {
       headers: HEADERS,
     });
     if (response.status === 200 || response.status === 201) {
-      return response.data;
+      newData = await response.data;
     }
   } catch (error) {
     console.log("Error:", error);
   }
+  return newData;
 };
 
-export async function deleteComment(id: number) {
+export async function deleteComment(id: number): Promise<number> {
+  let status = 0;
   try {
     const response = await axios.delete(URL_COMMENTS + id, {
       headers: HEADERS,
     });
-    return response.status;
+    status = response.status;
   } catch (error) {
     console.log("Ошибка при удалении комментария:", error);
   }
+  return status;
 }

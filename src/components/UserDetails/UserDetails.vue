@@ -40,12 +40,13 @@
 <script lang="ts">
 import { getPosts } from "@/helpers/PostService";
 import { getTodoList } from "@/helpers/TodoService";
-import { OnePost, User } from "@/helpers/Types";
+import { User } from "./models";
 import { getUser } from "@/helpers/UserService";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { OnePost } from "../PostsComponents/models";
 import { Todo } from "../TodoComponents/models";
-import { getGender, getStatus } from "./herlpers";
+import { getGender, getStatus } from "./helpers";
 
 export default defineComponent({
   setup() {
@@ -101,3 +102,4 @@ export default defineComponent({
 </script>
 
 <style scoped></style>
+./helpers

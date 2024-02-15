@@ -1,6 +1,6 @@
 import { HEADERS, URL_USERS } from "@/config";
 import axios from "axios";
-import { User, CreateUser } from "./Types";
+import { User, CreateUser } from "@/components/UserDetails/models";
 
 export const getUser = async (id: number): Promise<User> => {
   const url = URL_USERS + id;
@@ -53,7 +53,7 @@ export async function getIsAuth(id: number): Promise<User> {
   return user;
 }
 
-export async function updateUser(id: number, user: User) {
+export async function updateUser(id: number, user: User): Promise<User> {
   const url = URL_USERS + id;
   const data = {
     name: user.name,
@@ -62,17 +62,19 @@ export async function updateUser(id: number, user: User) {
     gender: user.gender,
     id: user.id,
   };
+  let updateUser = {} as User;
   try {
     const response = await axios.put(url, data, {
       headers: HEADERS,
     });
-    return response.data;
+    updateUser = await response.data;
   } catch (error) {
     console.log("Error:", error);
   }
+  return updateUser;
 }
 
-export async function createUser(user: CreateUser) {
+export async function createUser(user: CreateUser): Promise<User> {
   const url = URL_USERS;
   const data = {
     name: user.name,
@@ -80,12 +82,14 @@ export async function createUser(user: CreateUser) {
     gender: user.gender,
     status: user.status,
   };
+  let userNew = {} as User;
   try {
     const response = await axios.post(url, data, {
       headers: HEADERS,
     });
-    return response.data;
+    userNew = await response.data;
   } catch (error) {
     console.log("Error:", error);
   }
+  return userNew;
 }

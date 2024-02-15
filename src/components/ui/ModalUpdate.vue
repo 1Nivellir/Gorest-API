@@ -35,7 +35,6 @@
 </template>
 
 <script lang="ts">
-import { OnePost } from "@/helpers/Types";
 import { usePostsStore } from "@/store/posts";
 import { useTodoStore } from "@/store/todos";
 import { mdiPencil } from "@mdi/js";
@@ -83,11 +82,8 @@ export default defineComponent({
           openModal.value = false;
         }
       } else if ("title" in props.item) {
-        const itemOnePost = props.item as OnePost;
         if (route.path.includes("posts")) {
           const data = {
-            id: itemOnePost.id,
-            user_id: itemOnePost.user_id,
             title: textTitle.value,
             body: textBody.value,
           };

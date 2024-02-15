@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { OnePost } from "@/helpers/Types";
+import { OnePost } from "@/components/PostsComponents/models";
 import { usePostsStore } from "@/store/posts";
 import { Ref, onMounted, reactive, ref, watch } from "vue";
 import ActionsBtn from "../ui/ActionsBtn.vue";

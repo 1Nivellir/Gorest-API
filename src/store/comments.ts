@@ -1,9 +1,9 @@
 import {
-  addComment,
+  addCommentToServer,
   deleteComment,
   updateComment,
 } from "@/helpers/CommentsService";
-import { Comments } from "@/helpers/Types";
+import { Comments } from "@/components/PostsComponents/models";
 import { defineStore } from "pinia";
 
 export const useCommentsStore = defineStore("comments", {
@@ -15,7 +15,7 @@ export const useCommentsStore = defineStore("comments", {
   },
   actions: {
     async addComment(id: number, data: string) {
-      const item = await addComment(id, data);
+      const item = await addCommentToServer(id, data);
       this.commentsList.push(item);
     },
     getComment(id: any) {
@@ -38,7 +38,7 @@ export const useCommentsStore = defineStore("comments", {
         }
       }
     },
-    async updateComment(id: number, text: string): Promise<void> {
+    async updateComment(id: number, text: string) {
       const updatedComment = await updateComment(id, text);
       const index = this.commentsList.findIndex((comment) => comment.id === id);
       if (index !== -1) {

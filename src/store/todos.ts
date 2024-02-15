@@ -1,4 +1,4 @@
-import { Todo } from "@/components/TodoComponents/models";
+import { Todo, CreateTodo } from "@/components/TodoComponents/models";
 import {
   createEvent,
   deleteEvent,
@@ -32,7 +32,7 @@ export const useTodoStore = defineStore("todo", {
     setTotalPages(total: number) {
       this.pages = total;
     },
-    async updateTodo(id: number, data: Todo) {
+    async updateTodo(id: number, data: CreateTodo) {
       const item = await updateEvent(id, data);
       const index = this.todoList.findIndex((item) => item.id === id);
       this.todoList[index] = item;

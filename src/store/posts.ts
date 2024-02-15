@@ -1,5 +1,5 @@
-import { deletePost, updatePost, createPost } from "@/helpers/PostService";
-import { OnePost } from "@/helpers/Types";
+import { createPost, deletePost, updatePost } from "@/helpers/PostService";
+import { OnePost, UpdatePost } from "@/components/PostsComponents/models";
 import { defineStore } from "pinia";
 
 export const usePostsStore = defineStore("posts", {
@@ -21,7 +21,7 @@ export const usePostsStore = defineStore("posts", {
         this.showModal = false;
       }, 3000);
     },
-    async addPost(id: number, post: OnePost) {
+    async addPost(id: number, post: UpdatePost) {
       const res = await createPost(id, post);
       this.posts.push(res);
     },
@@ -34,17 +34,17 @@ export const usePostsStore = defineStore("posts", {
         }
       }
     },
-    async updatePost(updatedPost: OnePost, id: number): Promise<void> {
-      const status = await updatePost(id, updatedPost);
-      if (status === 200 || status === 201) {
+    async updatePost(updatedPost: UpdatePost, id: number) {
+      const result = await updatePost(id, updatedPost);
+      if (result && (result.status === 200 || result.status === 201)) {
         const index = this.posts.findIndex((post) => post.id === id);
         if (index !== -1) {
           console.log("Post updated successfully");
-          this.posts[index] = updatedPost;
+          this.posts[index] = result.post;
         }
       }
     },
-    setPosts(posts: OnePost[]): void {
+    setPosts(posts: OnePost[]) {
       this.posts = posts;
     },
     clearPosts() {
