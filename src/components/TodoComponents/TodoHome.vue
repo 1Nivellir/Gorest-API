@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <CreateTodo v-if="userStore.isAuth" />
+    <CreateTodo v-if="userStore.isAuth && showInputAddEvent" />
+
     <div class="custom__list-item">
       <TodoList />
     </div>
@@ -10,10 +11,11 @@
 <script lang="ts">
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
-import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
+import { defineComponent, inject, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import CreateTodo from "./CreateTodo.vue";
 import TodoList from "./TodoList.vue";
+import { getNumberInRouter } from "./helpers";
 export default defineComponent({
   components: { TodoList, CreateTodo },
   setup() {
@@ -22,35 +24,41 @@ export default defineComponent({
     const dialog = ref(false);
     const loading = ref(false);
     const ready = ref(false);
-    const todoList = computed(() => todoStore.getTodoList);
     const todoStore = useTodoStore();
     const isAuth = userStore.getAuth;
     let injectedUserId = inject("userId");
     const userId = Number(injectedUserId);
+    const showInputAddEvent = ref(false);
 
     watch(
       () => userStore.getAuth,
       async (newVal) => {
         if (newVal) {
-          await todoStore.setTodoList(1, userId);
+          await todoStore.setTodoList(userId, 1, "");
         }
       }
     );
     onMounted(async () => {
       if (isAuth) {
         if (typeof userId === "number") {
-          await todoStore.setTodoList(1, userId);
+          await todoStore.setTodoList(userId, 1, "");
         }
+      }
+      if (getNumberInRouter(route.params.userId) === userStore.userData.id) {
+        showInputAddEvent.value = true;
+      } else {
+        showInputAddEvent.value = false;
       }
     });
     watch(
       () => route.params.userId,
       async (newVal) => {
-        const postIdAsNumber = Array.isArray(newVal) ? newVal[0] : newVal;
-        const userIdNew = parseInt(postIdAsNumber, 10);
+        const userIdNew = getNumberInRouter(newVal);
         todoStore.clearTodos();
         todoStore.setCurrentPage(1);
-        await todoStore.setTodoList(1, userIdNew);
+        await todoStore.setTodoList(userIdNew, 1, "");
+        showInputAddEvent.value =
+          userIdNew === userStore.userData.id ? true : false;
       }
     );
 
@@ -58,8 +66,8 @@ export default defineComponent({
       dialog,
       loading,
       ready,
-      todoList,
       userStore,
+      showInputAddEvent,
     };
   },
 });

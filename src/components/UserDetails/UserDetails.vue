@@ -23,7 +23,13 @@
           >Постов пользователя: {{ posts?.length }}
         </v-list-item>
         <v-list-item class="descr__link" link @click="goToUserTodos"
-          >Дел пользователя:{{ todos?.length }}
+          >Дел пользователя: {{ todos?.length }}
+        </v-list-item>
+        <v-list-item class="descr__link" link @click="goToUserTodos"
+          >Готовых дел: {{ ready }}
+        </v-list-item>
+        <v-list-item class="descr__link" link @click="goToUserTodos"
+          >Не готовых дел: {{ notReady }}
         </v-list-item>
       </v-list>
     </div>
@@ -40,13 +46,13 @@
 <script lang="ts">
 import { getPosts } from "@/helpers/PostService";
 import { getTodoList } from "@/helpers/TodoService";
-import { User } from "./models";
 import { getUser } from "@/helpers/UserService";
 import { defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { OnePost } from "../PostsComponents/models";
 import { Todo } from "../TodoComponents/models";
 import { getGender, getStatus } from "./helpers";
+import { User } from "./models";
 
 export default defineComponent({
   setup() {
@@ -61,6 +67,8 @@ export default defineComponent({
     const user = ref<User>();
     const todos = ref<Todo[]>();
     const posts = ref<OnePost[]>();
+    const notReady = ref(0);
+    const ready = ref(0);
     onMounted(async () => {
       try {
         overlay.value = true;
@@ -73,14 +81,26 @@ export default defineComponent({
           }),
           getTodoList(userId).then((res) => {
             todos.value = res;
+            for (let i = 0; i < res.length; ++i) {
+              const item = res[i];
+              if (item.status === "completed") {
+                ready.value += 1;
+              }
+              if (item.status === "pending") {
+                notReady.value += 1;
+              }
+            }
           }),
         ]);
+
+        console.log(todos.value);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         overlay.value = false;
       }
     });
+
     const goToUserPosts = () => {
       $router.push({ name: "posts", params: { userId } });
     };
@@ -96,6 +116,8 @@ export default defineComponent({
       getStatus,
       goToUserPosts,
       goToUserTodos,
+      notReady,
+      ready,
     };
   },
 });

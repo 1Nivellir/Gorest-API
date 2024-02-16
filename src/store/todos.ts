@@ -14,8 +14,10 @@ export const useTodoStore = defineStore("todo", {
     currentPage: 1,
     total: 0,
     pages: 1,
+    filterTodo: "",
   }),
   getters: {
+    getFilter: (state) => state.filterTodo,
     getTodoList: (state) => state.todoList,
     getCurrentPage: (state) => state.currentPage,
     getPages: (state) => state.pages,
@@ -50,13 +52,18 @@ export const useTodoStore = defineStore("todo", {
         this.todoList.splice(index, 1);
       }
     },
-    async setTodoList(id: number, page: number) {
-      const item = await fetchTodos(id, page);
+    async setTodoList(id: number, page: number, status: string) {
+      console.log(status);
+      const item = await fetchTodos(id, page, status);
       this.todoList = item;
     },
+
     clearTodos() {
       this.todoList = [];
       (this.currentPage = 1), (this.total = 0), (this.pages = 1);
+    },
+    setFilter(filter: string) {
+      this.filterTodo = filter;
     },
   },
 });

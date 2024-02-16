@@ -20,7 +20,7 @@
 <script lang="ts">
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 export default defineComponent({
   setup() {
@@ -28,7 +28,7 @@ export default defineComponent({
     const userStore = useUserStore();
     const todoStore = useTodoStore();
     const loading = ref(false);
-
+    const statusFilter = computed(() => todoStore.getFilter);
     const addEvent = async () => {
       loading.value = true;
       const id = userStore.userData.id;
@@ -40,8 +40,14 @@ export default defineComponent({
           const postsPerPage = 5;
           const totalPages = todoStore.total / postsPerPage;
           if (todoStore.pages < totalPages) {
-            todoStore.setCurrentPage(todoStore.getCurrentPage + 1);
-            await todoStore.setTodoList(todoStore.getCurrentPage, id);
+            if (statusFilter.value === "pending" || statusFilter.value === "") {
+              todoStore.setCurrentPage(todoStore.getCurrentPage + 1);
+              await todoStore.setTodoList(
+                id,
+                todoStore.getCurrentPage,
+                statusFilter.value
+              );
+            }
           }
         }
       } catch (error: any) {

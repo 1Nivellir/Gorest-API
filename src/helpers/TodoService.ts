@@ -63,10 +63,17 @@ export async function deleteEvent(id: number): Promise<number> {
   return status;
 }
 
-export async function fetchTodos(page: number, id: number): Promise<Todo[]> {
+export async function fetchTodos(
+  id: number,
+  page: number,
+  status: string = ""
+): Promise<Todo[]> {
   const limit = 5;
   const todoStore = useTodoStore();
-  const url = URL_USERS + id + "/todos";
+  let url = URL_USERS + id + "/todos";
+  if (status !== "") {
+    url = URL_USERS + id + `/todos?status=${status}`;
+  }
   let data = [] as Todo[];
   try {
     const response = await axios.get(url, {
@@ -83,6 +90,7 @@ export async function fetchTodos(page: number, id: number): Promise<Todo[]> {
     todoStore.setTotalTodos(totalPosts);
     todoStore.getPages;
     data = await response.data;
+    console.log(data);
     if (totalPages > 0) {
       todoStore.setTotalPages(totalPages);
     }

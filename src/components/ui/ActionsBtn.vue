@@ -73,7 +73,7 @@ import {
 import { usePostsStore } from "@/store/posts";
 import { useTodoStore } from "@/store/todos";
 import { useUserStore } from "@/store/user";
-import { defineComponent, inject, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ModalUpdate from "./ModalUpdate.vue";
 
@@ -97,6 +97,7 @@ export default defineComponent({
     const showGoToDetails = ref(false);
     const textTooltip = ref("");
     const item = props.item;
+    const status = computed(() => todoStore.getFilter);
     onMounted(() => {
       const userIdNumber = route.params.userId;
       if (typeof userIdNumber === "string") {
@@ -135,7 +136,6 @@ export default defineComponent({
           const totalPages = postsStore.postTotal / postsPerPage;
           if (postsStore.postPages - 1 === totalPages) {
             postsStore.setCurrentPage(postsStore.getPagePosts - 1);
-            console.log(id);
             await postsStore.setPosts(postsStore.getPagePosts, id);
           }
         } catch (error) {
@@ -150,7 +150,11 @@ export default defineComponent({
           const totalPages = todoStore.total / todoPerPage;
           if (todoStore.pages - 1 === totalPages) {
             todoStore.setCurrentPage(todoStore.getCurrentPage - 1);
-            await todoStore.setTodoList(todoStore.getCurrentPage, id);
+            await todoStore.setTodoList(
+              id,
+              todoStore.getCurrentPage,
+              status.value
+            );
           }
         } catch (error) {
           console.log("Error:", error);

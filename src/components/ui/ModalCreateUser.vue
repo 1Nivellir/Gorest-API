@@ -37,7 +37,7 @@
                   :items="items"
                   item-title="state"
                   item-value="abbr"
-                  label="Select"
+                  label="Выберете пол"
                   persistent-hint
                   return-object
                   single-line

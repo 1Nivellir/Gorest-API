@@ -1,7 +1,22 @@
 <template>
+  <v-select
+    v-model="select"
+    :hint="`${select.state}, ${select.abbr}`"
+    :items="items"
+    item-title="state"
+    item-value="abbr"
+    label="Select"
+    persistent-hint
+    return-object
+    single-line
+  ></v-select>
   <v-list lines="one" class="custom__list-todo">
     <TransitionGroup tag="ul" name="list">
-      <TodoListItem :item="item" v-for="item in todoList" :key="item.id" />
+      <TodoListItem
+        :item="item"
+        v-for="item in filteredTodoList"
+        :key="item.id"
+      />
     </TransitionGroup>
     <v-pagination
       :model-value="page"
@@ -18,7 +33,15 @@
 
 <script lang="ts">
 import { useTodoStore } from "@/store/todos";
-import { computed, defineComponent, inject, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  provide,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import { useRoute } from "vue-router";
 import TodoListItem from "./TodoListItem.vue";
 
@@ -33,6 +56,33 @@ export default defineComponent({
     const totalPage = computed(() => todoStore.getPages);
     const page = computed(() => todoStore.getCurrentPage);
     const todoList = computed(() => todoStore.getTodoList);
+
+    const select = ref({ state: "Все дела", abbr: "" });
+    const items = reactive([
+      { state: "Все дела", abbr: "" },
+      { state: "Выполненных", abbr: "completed" },
+      { state: "Невыполненных", abbr: "pending" },
+    ]);
+    const filteredTodoList = computed(() => {
+      const selectedAbbr = select.value.abbr;
+
+      if (selectedAbbr === "") {
+        return todoList.value;
+      } else {
+        return todoList.value.filter((todo) =>
+          selectedAbbr.includes(todo.status)
+        );
+      }
+    });
+    provide("status", select.value.abbr);
+    watch(
+      () => select.value,
+      async () => {
+        const newValue = select.value.abbr.toString();
+        todoStore.setFilter(newValue);
+        await todoStore.setTodoList(userId, 1, newValue);
+      }
+    );
     watch(
       () => route.params.userId,
       (newVal) => {
@@ -43,9 +93,9 @@ export default defineComponent({
     );
     const changeEvents = async (count: number) => {
       todoStore.setCurrentPage(count);
-      await todoStore.setTodoList(count, userId);
+      await todoStore.setTodoList(userId, count, select.value.abbr);
     };
-    return { totalPage, page, changeEvents, todoList };
+    return { totalPage, page, changeEvents, filteredTodoList, select, items };
   },
 });
 </script>

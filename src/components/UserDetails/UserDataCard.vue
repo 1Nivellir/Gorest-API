@@ -25,9 +25,7 @@
       <div v-show="show">
         <v-divider></v-divider>
 
-        <v-card-text
-          >Статус аккаунта: {{ userStore.userData.status }}
-        </v-card-text>
+        <v-card-text>Статус аккаунта: {{ status }} </v-card-text>
         <v-card-text>Пол: {{ gender }} </v-card-text>
 
         <v-card-text>ID аккаунта: {{ userStore.userData.id }} </v-card-text>
@@ -57,11 +55,15 @@ export default {
     const gender = computed(() => {
       return userStore.userData.gender === "male" ? "Мужской" : "Женский";
     });
+    const status = computed(() => {
+      return userStore.userData.status === "active" ? "Активный" : "Неактивный";
+    });
     return {
       userStore,
       deleteUser,
       show,
       gender,
+      status,
     };
   },
 };

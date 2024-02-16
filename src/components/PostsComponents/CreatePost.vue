@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts">
-import { fetchPost } from "@/helpers/PostService";
 import { usePostsStore } from "@/store/posts";
 import { useUserStore } from "@/store/user";
 import { defineComponent, ref } from "vue";
